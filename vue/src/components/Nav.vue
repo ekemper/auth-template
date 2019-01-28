@@ -19,10 +19,20 @@
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
+                   
+
+                    <b-img
+                        v-show="hasImage"
+                        rounded="circle"
+                        width="60"
+                        height="60"
+                        alt="img"
+                        class="m-1" />
 
                     <b-nav-item-dropdown
                         v-if="googleUser"
-                        right>
+                        right
+                    >
                         <!-- Using button-content slot -->
                         <template slot="button-content">
                             <em>{{ googleUser.fullName }}</em>
@@ -32,9 +42,10 @@
                             href="#"
                             @click="logout">Signout</b-dropdown-item>
                     </b-nav-item-dropdown>
+                    
 
                     <g-signin-button
-                        v-else
+                        v-show="!googleUser"
                         @google-auth-done="onSignIn"/>
 
                 </b-navbar-nav>
@@ -52,7 +63,10 @@ export default {
     computed: {
         ...mapGetters('auth',[
             'googleUser',
-        ])
+        ]),
+        hasImage() {
+            return this.googleUser && this.googleUser.profileImage;
+        }
     },
     beforeMount() {
         this.checkForLoggedInUser();
@@ -69,3 +83,9 @@ export default {
     },
 };
 </script>
+
+<style >
+.b-navbar-nav {
+    display: flex
+}
+</style>

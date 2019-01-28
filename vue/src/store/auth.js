@@ -30,7 +30,7 @@ const actions = {
             El: rawGoogleUser.El,
             tokenData: rawGoogleUser.Zi,
             Eea: rawGoogleUser.Eea,
-            userProfileImage: rawGoogleUser.w3.Paa,
+            profileImage: rawGoogleUser.w3.Paa,
             email: rawGoogleUser.w3.U3,
             fullName: rawGoogleUser.w3.ig,
             firstName: rawGoogleUser.w3.ofa,
