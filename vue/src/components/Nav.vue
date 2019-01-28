@@ -1,0 +1,64 @@
+<template>
+    <div>
+        <b-navbar
+            toggleable="md"
+            type="dark"
+            variant="info">
+
+            <b-navbar-toggle target="nav_collapse"/>
+
+            <b-navbar-brand href="#">NavBar</b-navbar-brand>
+
+            <b-collapse
+                id="nav_collapse"
+                is-nav>
+
+                <b-navbar-nav>
+                    <b-nav-item href="#">Link</b-nav-item>
+                </b-navbar-nav>
+
+                <!-- Right aligned nav items -->
+                <b-navbar-nav class="ml-auto">
+
+                    <b-nav-item-dropdown
+                        v-if="googleUser"
+                        right>
+                        <!-- Using button-content slot -->
+                        <template slot="button-content">
+                            <em>{{ googleUser.w3.ig }}</em>
+                        </template>
+                        <b-dropdown-item href="#">Profile</b-dropdown-item>
+                        <b-dropdown-item href="#">Signout</b-dropdown-item>
+                    </b-nav-item-dropdown>
+
+                    <g-signin-button
+                        v-else
+                        @google-auth-done="onSignIn"/>
+
+                </b-navbar-nav>
+
+            </b-collapse>
+        </b-navbar>
+    </div>
+</template>
+
+<script>
+import {mapGetters, mapMutations} from 'vuex';
+
+export default {
+    name: 'Nav',
+    computed: {
+        ...mapGetters('auth',[
+            'googleUser'
+        ])
+    },
+    methods: {
+        ...mapMutations('auth',[
+            'setGoogleUser'
+        ]),
+        onSignIn(dat){
+            this.setGoogleUser(dat);
+        }
+    },
+};
+</script>

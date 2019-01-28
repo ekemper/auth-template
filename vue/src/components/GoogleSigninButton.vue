@@ -1,10 +1,16 @@
 <template>
-    <div ref="signinBtn" class="btn-sign-in">Sign In</div>
+    <b-button
+        ref="signinBtn"
+        :variant="`success`"
+        class="btn-sign-in"
+    >
+        Sign In
+    </b-button>
 </template>
 
 <script>
 export default {
-    name: 'g-signin-button',
+    name: 'GSigninButton',
     mounted () {
 
         if(!window.gapi){
@@ -13,17 +19,17 @@ export default {
         }
 
         window.gapi.load('auth2', () => {
-        const auth2 = window.gapi.auth2.init({
-            client_id: '817620866614-3j683eppkju965sjmamg6qf49rgtmmpq.apps.googleusercontent.com',
-            cookiepolicy: 'single_host_origin'
-        })
-        auth2.attachClickHandler(this.$refs.signinBtn, {}, googleUser => {
-            this.$emit('google-auth-done', googleUser)
+            const auth2 = window.gapi.auth2.init({
+                client_id: '817620866614-3j683eppkju965sjmamg6qf49rgtmmpq.apps.googleusercontent.com',
+                cookiepolicy: 'single_host_origin'
+            });
+            auth2.attachClickHandler(this.$refs.signinBtn, {}, googleUser => {
+                this.$emit('google-auth-done', googleUser);
             // eslint-disable-next-line
         }, error => console.log(error))
-        })
+        });
     }
-}
+};
 </script>
 
   

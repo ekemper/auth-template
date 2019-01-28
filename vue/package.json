@@ -9,30 +9,24 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "vue": "^2.5.21"
+    "bootstrap-vue": "^2.0.0-rc.11",
+    "vue": "^2.5.21",
+    "vuex": "^3.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.3.0",
     "@vue/cli-plugin-eslint": "^3.3.0",
     "@vue/cli-service": "^3.3.0",
     "babel-eslint": "^10.0.1",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "vue-template-compiler": "^2.5.21"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
+    "eslint": "^5.9.0",
+    "eslint-plugin-vue": "^4.7.1",
+    "vue-template-compiler": "^2.5.21",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-loader": "^2.1.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
   },
   "postcss": {
     "plugins": {
