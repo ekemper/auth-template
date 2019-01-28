@@ -25,10 +25,12 @@
                         right>
                         <!-- Using button-content slot -->
                         <template slot="button-content">
-                            <em>{{ googleUser.w3.ig }}</em>
+                            <em>{{ googleUser.fullName }}</em>
                         </template>
                         <b-dropdown-item href="#">Profile</b-dropdown-item>
-                        <b-dropdown-item href="#">Signout</b-dropdown-item>
+                        <b-dropdown-item
+                            href="#"
+                            @click="logout">Signout</b-dropdown-item>
                     </b-nav-item-dropdown>
 
                     <g-signin-button
@@ -43,22 +45,27 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
 
 export default {
     name: 'Nav',
     computed: {
         ...mapGetters('auth',[
-            'googleUser'
+            'googleUser',
         ])
     },
+    beforeMount() {
+        this.checkForLoggedInUser();
+    },
     methods: {
-        ...mapMutations('auth',[
-            'setGoogleUser'
+        onSignIn(rawGoogleUser){
+            this.parseGoogleUser({rawGoogleUser});
+        },
+        ...mapActions('auth',[
+            'logout',
+            'checkForLoggedInUser',
+            'parseGoogleUser'
         ]),
-        onSignIn(dat){
-            this.setGoogleUser(dat);
-        }
     },
 };
 </script>
