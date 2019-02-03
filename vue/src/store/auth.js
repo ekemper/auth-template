@@ -1,10 +1,14 @@
 const state = {
-    googleUser: null
+    googleUser: null,
+    healthCheck: null
 };
 
 const getters = {
     googleUser: state => {
         return state.googleUser;
+    },
+    healthCheck: state => {
+        return state.healthCheck;
     }
 };
 
@@ -38,6 +42,23 @@ const actions = {
         };
 
         context.commit('setGoogleUser', parsedUser);
+    },
+    fetchHealthCheck ({ dispatch }) {
+        dispatch('api/req', {
+            path: '/health-check',
+            method: 'get'
+        });
+
+
+        //const healthResponse = await axios.get('/health-check');
+
+
+        //     try{ 
+        //         this.healthStatus = healthResponse.data.message;
+        //     }catch(error){
+        //         // eslint-disable-next-line
+        //   console.warn('error getting server health check',{error})
+        //     }
     }
 };
 

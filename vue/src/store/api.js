@@ -14,6 +14,10 @@ const getters = {
 
 const actions = {
     req: async ({ state }, { options }) => {
+
+        options.url = state.baseURL + options.path;
+
+        debugger;
         try {
             return await state.instance(options);
         } catch (error) {
