@@ -6,7 +6,10 @@ const googleAuthMiddleware = (req, res, next) => {
 
     async function verify () {
 
-        console.log('calling google auth verify');
+        const token = parseToken(req);
+        if (!token) {
+            res.json({ Error: 'invalid token' })
+        }
 
         const ticket = await client.verifyIdToken({
             idToken: token,
@@ -16,9 +19,6 @@ const googleAuthMiddleware = (req, res, next) => {
         });
 
         const payload = ticket.getPayload();
-
-        console.log(`rx'ed payload`, { payload })
-
         res.userId = payload['sub'];
 
         next();
@@ -27,6 +27,15 @@ const googleAuthMiddleware = (req, res, next) => {
         //const domain = payload['hd'];
     }
     verify().catch(console.error);
+}
+
+const parseToken = req => {
+    const items = req.headers.authorization.split(/[ ]+/);
+    if (items.length > 1 && items[0].trim() == "Bearer") {
+        return items[1];
+    } else {
+        return null
+    }
 }
 
 module.exports = googleAuthMiddleware;

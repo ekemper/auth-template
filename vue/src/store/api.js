@@ -1,29 +1,51 @@
 import axios from 'axios';
 
+const BASE_URL = 'http://localhost:4001';
+
 const instance = axios.create({
-    baseURL: 'https://localhost:4001/',
+    BASE_URL,
     timeout: 5000,
 });
 
+instance.interceptors.request.use(
+    (config) => {
+        const googleUser = JSON.parse(localStorage.getItem('googleUser'));
+        const token = googleUser.tokenData.id_token;
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        return config;
+    },
+
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
 const state = {
-    instance
+    instance,
+    BASE_URL,
 };
 
-const getters = {
-};
+// const getters = {
+//     token: state => {
+//         debugger;
+//         return state.instance.defaults.headers.common['Authorization'];
+//     }
+// };
 
 const actions = {
-    req: async ({ state }, { options }) => {
+    req: async ({ state }, options) => {
 
-        options.url = state.baseURL + options.path;
+        options.url = state.BASE_URL + options.path;
 
-        debugger;
         try {
             return await state.instance(options);
         } catch (error) {
             console.warn(error);
         }
-    }
+    },
 };
 
 const mutations = {
@@ -38,7 +60,7 @@ const mutations = {
 export default {
     namespaced: true,
     state,
-    getters,
+    //getters,
     actions,
     mutations
 };

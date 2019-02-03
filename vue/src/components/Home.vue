@@ -1,7 +1,15 @@
 <template>
     <div>
         <Nav/>
-        <h1>authenticated server communication status: {{ healthCheck }}</h1>
+        <b-button
+            :variant="`primary`"
+            class="btn-sign-in"
+            @click="fetchHealthCheck"
+        >
+            fetchHealthCheck
+        </b-button>
+        <h4>authenticated server communication status: </h4>
+        <pre>{{ healthCheck }}</pre>
     </div>
 </template>
 
@@ -18,9 +26,6 @@ export default {
         ...mapGetters('auth',[
             'healthCheck'
         ])
-    },
-    async mounted() {
-        this.fetchHealthCheck();
     },
     methods: {
         ...mapActions('auth',[

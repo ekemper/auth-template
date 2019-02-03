@@ -42,23 +42,16 @@ const actions = {
         };
 
         context.commit('setGoogleUser', parsedUser);
+
+        context.dispatch('api/setToken', parsedUser.tokenData, { root: true });
     },
-    fetchHealthCheck ({ dispatch }) {
-        dispatch('api/req', {
+    async fetchHealthCheck ({ dispatch, commit }) {
+        const healthResp = await dispatch('api/req', {
             path: '/health-check',
             method: 'get'
-        });
+        }, { root: true });
 
-
-        //const healthResponse = await axios.get('/health-check');
-
-
-        //     try{ 
-        //         this.healthStatus = healthResponse.data.message;
-        //     }catch(error){
-        //         // eslint-disable-next-line
-        //   console.warn('error getting server health check',{error})
-        //     }
+        commit('setHealthCheck', healthResp.data);
     }
 };
 
@@ -75,6 +68,9 @@ const mutations = {
     },
     removeGoogleUser (state) {
         state.googleUser = null;
+    },
+    setHealthCheck (state, payload) {
+        state.healthCheck = payload;
     }
 };
 
