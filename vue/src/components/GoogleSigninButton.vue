@@ -26,7 +26,7 @@ export default {
                 auth2.attachClickHandler(this.$refs.signinBtn, {}, googleUser => {
                     this.$emit('google-auth-done', googleUser);
                     // eslint-disable-next-line
-            }, error => console.log(error))
+                }, error => console.log(error))
             });
 
         },500); // TODO : need to make this more robust
