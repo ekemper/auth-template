@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 mongoose
   .connect(process.env.DB_CONNECTION_URI)
-  .then(() => {})
+  .then(() => { })
   .catch(err => {
     console.error('Database connection error', { err })
   })
@@ -13,12 +13,6 @@ db.once('open', () => {
   //console.log('mongo connection established')
   let schema = new mongoose.Schema({
     description: String
-  })
-  const Listing = db.model('Listing', schema)
-  const testListing = new Listing({ description: 'Silence' })
-  testListing.save(function(err, fluffy) {
-    if (err) return console.error(err)
-    console.log('saved', { testListing })
   })
 })
 
