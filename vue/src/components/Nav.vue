@@ -14,7 +14,7 @@
                 is-nav>
 
                 <b-navbar-nav>
-                    <b-nav-item href="#">Link</b-nav-item>
+                    <b-nav-item href="#">User List</b-nav-item>
                 </b-navbar-nav>
 
                 <!-- Right aligned nav items -->

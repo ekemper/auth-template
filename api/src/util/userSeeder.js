@@ -1,17 +1,21 @@
-var faker = require('faker');
+require('dotenv').config()
+const User = require('../server/models/User');
+const faker = require('faker');
 
-const db = require('./util/mongooseClient')
+const db = require('./mongooseClient')
 
-const User = db.model('User', schema)
 
-const testListing = new User({
-    email: faker.internet.email(),
-    firstName: faker.name.firstName(),
-    lastName: faker.name.lastName(),
-    profileImage: String
-})
+for (let i = 0; i < 100; i++) {
 
-testListing.save(function (err, fluffy) {
-    if (err) return console.error(err)
-    console.log('saved', { testListing })
-})
+    const testListing = new User({
+        email: faker.internet.email(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        profileImage: String
+    })
+
+    testListing.save(function (err, fluffy) {
+        if (err) return console.error(err)
+        console.log('saved', { testListing })
+    })
+}

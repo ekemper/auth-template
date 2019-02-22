@@ -4,6 +4,7 @@ let schema = new mongoose.Schema({
   firstName: String,
   fullName: String,
   lastName: String,
-  profileImage: String
+  profileImage: String,
+  isAdmin: Boolean
 })
 module.exports = mongoose.model('user', schema)
