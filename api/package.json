@@ -10,7 +10,7 @@
     "test:int": "export NODE_ENV=$npm_config_env && nyc --reporter=html --reporter=text-summary --reporter=json-summary mocha --exit --recursive --timeout=20000 test/integration",
     "test:local": "NODE_ENV=test mocha --inspect --reporter=mochawesome --watch --bail test/**/*"
   },
-  "license": "butt",
+  "license": "",
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
