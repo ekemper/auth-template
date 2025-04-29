@@ -22,6 +22,10 @@ Run all tests with verbose output:
 ```bash
 pytest -v
 ```
+Run with log file:
+```bash
+pytest -v > test_output.log
+```
 
 Run tests with coverage report:
 ```bash
