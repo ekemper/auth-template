@@ -8,7 +8,9 @@ This directory contains the test suite for the authentication service. The tests
 tests/
 ├── __init__.py          # Test package initialization
 ├── conftest.py          # Test fixtures and configuration
-├── test_api.py          # API endpoint tests
+├── test_signup.py       # User registration endpoint tests
+├── test_login.py        # User authentication endpoint tests
+├── test_health.py       # Health check endpoint tests
 └── README.md           # This documentation
 ```
 
@@ -18,22 +20,58 @@ tests/
 
 Run all tests with verbose output:
 ```bash
-pytest tests/ -v
+pytest -v
 ```
 
 Run tests with coverage report:
 ```bash
-pytest --cov=app tests/
+pytest --cov=app
 ```
 
-Generate test output log:
+### Running Specific Tests
+
+Run tests for a specific endpoint:
 ```bash
-pytest tests/test_api.py -v > test_output.log
+# Signup tests
+pytest tests/test_signup.py
+# Login tests
+pytest tests/test_login.py
+# Health check tests
+pytest tests/test_health.py
+```
+
+Run a specific test:
+```bash
+pytest tests/test_signup.py::test_signup_success
+```
+
+Run tests by marker:
+```bash
+# Signup tests
+pytest -m signup
+# Login tests
+pytest -m login
+# Health check tests
+pytest -m health
 ```
 
 ### Test Categories
 
-#### Login Endpoint Tests
+#### Signup Endpoint Tests (`test_signup.py`)
+- Basic functionality:
+  - Successful user registration
+  - Missing required fields validation
+  - Invalid email format handling
+  - Password validation (complexity, matching)
+  - Duplicate email prevention
+
+- Edge cases:
+  - Case-insensitive email handling
+  - Email with whitespace
+  - Very long inputs
+  - Special characters in inputs
+
+#### Login Endpoint Tests (`test_login.py`)
 - Basic functionality:
   - Successful login with valid credentials
   - Failed login with wrong password
@@ -43,7 +81,7 @@ pytest tests/test_api.py -v > test_output.log
 
 - Edge cases:
   - Case-insensitive email handling
-  - Email with extra whitespace
+  - Email with whitespace
   - Password with whitespace
   - Very long credentials
   - Special characters in credentials
@@ -51,13 +89,9 @@ pytest tests/test_api.py -v > test_output.log
   - Lockout reset after successful login
   - Token expiration verification
 
-#### Security Tests
-- Rate limiting (disabled during tests)
-- Password complexity requirements
-- Account lockout protection
-- JWT token validation
-- Input sanitization
-- CORS protection
+#### Health Check Tests (`test_health.py`)
+- API availability
+- Response format validation
 
 ## Test Configuration
 
@@ -90,14 +124,16 @@ Key fixtures in `conftest.py`:
 
 When adding new tests:
 
-1. Follow the existing pattern in `test_api.py`
+1. Add tests to the appropriate endpoint-specific test file
 2. Use descriptive test names that indicate the scenario being tested
 3. Include both positive and negative test cases
 4. Add appropriate assertions for response status and content
 5. Document any new fixtures in `conftest.py`
+6. Add appropriate markers in `pytest.ini` if needed
 
 Example test structure:
 ```python
+@pytest.mark.signup  # Use appropriate marker
 def test_descriptive_name(client, fixture1, fixture2):
     # Setup
     test_data = {...}
@@ -116,7 +152,8 @@ def test_descriptive_name(client, fixture1, fixture2):
 2. Clean up any test data after each test
 3. Use meaningful test data that reflects real-world scenarios
 4. Add comments for complex test logic
-5. Group related tests using pytest classes
+5. Use appropriate markers for test categorization
+6. Keep tests organized by endpoint
 
 ## Common Issues and Solutions
 
@@ -148,19 +185,6 @@ def test_descriptive_name(client, fixture1, fixture2):
    - Concurrent user registration
    - Login under load
    - Rate limiting effectiveness
-
-## Logging
-
-Test output is logged to `test_output.log` when running:
-```bash
-pytest tests/test_api.py -v > test_output.log
-```
-
-The log file includes:
-- Test execution results
-- Detailed error messages
-- Coverage information
-- Timing data
 
 ## Continuous Integration
 
