@@ -32,7 +32,8 @@ def create_app():
     CORS(app, resources={
         r"/auth/*": {"origins": os.getenv('ALLOWED_ORIGINS', '*').split(','),
                     "methods": ["POST"],
-                    "allow_headers": ["Content-Type", "Authorization"]}
+                    "allow_headers": ["Content-Type", "Authorization"]},
+        r"/": {"origins": "*"}  # Allow all origins for the root path
     })
 
     # Configure rate limiting based on testing mode
@@ -276,6 +277,20 @@ def create_app():
         except Exception as e:
             logger.error('Login failed', extra={'error': str(e)}, exc_info=True)
             return jsonify({'error': 'An unexpected error occurred'}), 500
+
+    @app.route('/')
+    def root():
+        """Root endpoint that provides API information."""
+        return jsonify({
+            'name': 'Auth Template API',
+            'version': '1.0',
+            'endpoints': {
+                'health': '/health',
+                'signup': '/auth/signup',
+                'login': '/auth/login'
+            },
+            'documentation': 'See README.md for API documentation'
+        }), 200
 
     return app
 
