@@ -14,13 +14,13 @@ def log_request_info():
     if request.path == '/health':
         return
     
-    logger.info(
-        'Request processed',
-        extra={
-            'duration_ms': int((time.time() - g.start_time) * 1000),
-            'status_code': g.status_code if hasattr(g, 'status_code') else None,
-        }
-    )
+    extra = {}
+    if hasattr(g, 'start_time'):
+        extra['duration_ms'] = int((time.time() - g.start_time) * 1000)
+    if hasattr(g, 'status_code'):
+        extra['status_code'] = g.status_code
+    
+    logger.info('Request processed', extra=extra)
 
 def request_middleware(app):
     """Configure request middleware for the Flask app."""
