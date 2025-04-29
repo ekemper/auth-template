@@ -1,147 +1,139 @@
-# Auth Template
+# Auth Template Application
 
-A secure authentication service template with robust testing.
+This is a secure authentication template application built with Flask and React, ready for deployment on Heroku.
 
 ## Features
-- User registration and login
-- JWT-based authentication
+
+- Secure user authentication
 - Rate limiting
-- Account lockout protection
-- Secure password handling
-- Comprehensive test suite
+- CORS support
+- Email validation
+- JSON Web Token (JWT) based authentication
+- PostgreSQL database integration
+- Modern React frontend
 
-## Installation
+## Prerequisites
+
+- Python 3.9+
+- Node.js and npm
+- PostgreSQL database (We recommend Neon for development)
+- Heroku CLI
+
+## Local Development Setup
+
+1. Clone the repository:
 ```bash
-# Clone the repository
-git clone <repository-url>
+git clone <your-repo-url>
 cd auth-template
+```
 
-# Create and activate virtual environment
+2. Set up Python virtual environment:
+```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
+```
 
-# Copy example environment file
+3. Set up frontend:
+```bash
+cd frontend
+npm install
+npm run build
+cd ..
+```
+
+4. Configure environment variables:
+```bash
 cp example.env .env
 ```
-
-## Configuration
-Update the `.env` file with your settings:
-```env
-# Application settings
-DEBUG=False  # Set to True for development debugging
-TESTING=False  # Set to True for test environment
-SECRET_KEY=your-secret-key-here
-
-# Security settings
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5000
-RATELIMIT_STORAGE_URL=memory://
+Edit `.env` with your configuration:
+```
+FLASK_APP=app.py
+FLASK_ENV=development
+DATABASE_URL=your_database_url
+JWT_SECRET_KEY=your_secret_key
 ```
 
-## Running the Service
+5. Run the application:
 ```bash
-# Development mode
 flask run
-
-# Production mode
-gunicorn app:app
 ```
+
+## Database Setup
+
+We recommend using [Neon](https://neon.tech) for your PostgreSQL database needs. Here's how to set it up:
+
+1. Create a free account at [neon.tech](https://neon.tech)
+2. Create a new project
+3. Get your connection string from the dashboard
+4. Add the connection string to your `.env` file as `DATABASE_URL`
+
+## Deployment to Heroku
+
+1. Install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+
+2. Login to Heroku:
+```bash
+heroku login
+```
+
+3. Create a new Heroku app:
+```bash
+heroku create your-app-name
+```
+
+4. Set up PostgreSQL on Heroku:
+```bash
+heroku addons:create heroku-postgresql:mini
+```
+
+5. Configure environment variables:
+```bash
+heroku config:set JWT_SECRET_KEY=your_secret_key
+heroku config:set FLASK_ENV=production
+```
+
+6. Deploy your application:
+```bash
+git push heroku main
+```
+
+7. Run database migrations (if any):
+```bash
+heroku run python manage.py db upgrade
+```
+
+## Project Structure
+
+- `/app.py` - Main Flask application
+- `/frontend/` - React frontend application
+- `/tests/` - Test suite
+- `/utils/` - Utility functions
+- `Procfile` - Heroku deployment configuration
 
 ## Testing
-The project includes a comprehensive test suite organized by endpoint. Each endpoint has its own test file:
 
-- `test_signup.py`: Tests for user registration
-- `test_login.py`: Tests for user authentication
-- `test_health.py`: Tests for health check endpoint
-
-### Running Tests
-
+Run the test suite:
 ```bash
-# Run all tests with coverage report
 pytest
-
-# Run tests for a specific endpoint
-pytest tests/test_signup.py
-pytest tests/test_login.py
-pytest tests/test_health.py
-
-# Run a specific test function
-pytest tests/test_signup.py::test_signup_success
-
-# Run tests with specific marker
-pytest -m signup
-pytest -m login
-pytest -m health
-
-# Run tests with detailed output
-pytest -v
-
-# Run tests with coverage report
-pytest --cov=app
-
-# Run tests and generate HTML coverage report
-pytest --cov=app --cov-report=html
 ```
 
-### Test Configuration
+For coverage report:
+```bash
+pytest --cov=.
 
-Test settings are configured in `pytest.ini`:
-- Verbose output enabled by default
-- Coverage reporting enabled
-- Test environment variables set
-- Custom markers for each endpoint
-- Logging configuration
+## Security Considerations
 
-### Test Environment
-
-Tests use a separate configuration defined in `pytest.ini`:
-- Rate limiting disabled
-- In-memory storage
-- Test-specific secret key
-- Simplified CORS settings
-
-For detailed testing documentation, see [tests/README.md](tests/README.md).
-
-## API Documentation
-
-### Authentication Endpoints
-
-#### POST /auth/signup
-Register a new user.
-```json
-{
-    "email": "user@example.com",
-    "password": "SecurePass123!",
-    "confirm_password": "SecurePass123!"
-}
-```
-
-#### POST /auth/login
-Login with existing credentials.
-```json
-{
-    "email": "user@example.com",
-    "password": "SecurePass123!"
-}
-```
-
-## Security Features
-- Password complexity requirements
-- Rate limiting on all endpoints
-- Account lockout after failed attempts
-- Secure password hashing with bcrypt
-- JWT token expiration
-- CORS protection
-- Security headers
-
-## Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+- All passwords are hashed using bcrypt
+- Rate limiting is implemented to prevent brute force attacks
+- CORS is configured for security
+- JWT tokens are used for secure authentication
+- Environment variables are used for sensitive data
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+
+[Your License Here]
+
+## Contributing
+
+[Your Contributing Guidelines]

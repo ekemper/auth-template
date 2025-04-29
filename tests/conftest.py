@@ -3,48 +3,76 @@ import pytest
 from flask import Flask
 from dotenv import load_dotenv
 from app import create_app
+from config.database import db, init_db
+from api.services.auth_service import AuthService
 
-@pytest.fixture(scope='session')
+@pytest.fixture
 def app():
-    """Create a Flask application for testing"""
-    # Load test environment variables
-    load_dotenv('.env.test')
+    """Create and configure a new app instance for each test."""
+    test_config = {
+        'TESTING': True,
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:',
+        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
+        'RATELIMIT_ENABLED': False,  # Disable rate limiting for tests
+        'SECRET_KEY': 'test'
+    }
     
-    # Create the app with testing config
-    app = create_app()
-    app.config['TESTING'] = True
-    app.config['RATELIMIT_ENABLED'] = False  # Explicitly disable rate limiting
+    app = create_app(test_config)
     
-    return app
+    # Create tables for test database
+    with app.app_context():
+        db.create_all()
+    
+    yield app
+    
+    # Clean up / reset resources
+    with app.app_context():
+        db.session.remove()
+        db.drop_all()
 
 @pytest.fixture
 def client(app):
-    """Create a test client for the app"""
+    """A test client for the app."""
     return app.test_client()
 
-@pytest.fixture(autouse=True)
-def clear_users(app):
-    """Clear the users database before each test"""
-    with app.app_context():
-        app.users_db = {}  # Reset the in-memory user database
-        yield
-        app.users_db = {}  # Clean up after test
+@pytest.fixture
+def runner(app):
+    """A test CLI runner for the app."""
+    return app.test_cli_runner()
 
 @pytest.fixture
-def registered_user(client):
-    """Create a test user and return their credentials"""
-    user_data = {
-        'email': 'test@example.com',
-        'password': 'TestPass123!',
-        'confirm_password': 'TestPass123!'
-    }
-    
-    # Register the user
-    response = client.post('/auth/signup', json=user_data)
-    assert response.status_code == 201
-    
-    # Return the credentials (without confirm_password)
+def test_user():
+    """Test user data."""
     return {
-        'email': user_data['email'],
-        'password': user_data['password']
-    } 
+        'email': 'test@example.com',
+        'password': 'Test123!@#',
+        'confirm_password': 'Test123!@#'
+    }
+
+@pytest.fixture
+def auth_headers(client, test_user):
+    """Get auth headers for a test user."""
+    # Register the user
+    client.post('/api/auth/signup', json=test_user)
+    
+    # Login to get the token
+    response = client.post('/api/auth/login', json={
+        'email': test_user['email'],
+        'password': test_user['password']
+    })
+    
+    token = response.json['token']
+    return {'Authorization': f'Bearer {token}'}
+
+@pytest.fixture
+def db_session(app):
+    """Database session fixture."""
+    return db.session
+
+@pytest.fixture(autouse=True)
+def clear_users(app, db_session):
+    """Clear the users table before each test"""
+    with app.app_context():
+        for table in reversed(db.metadata.sorted_tables):
+            db_session.execute(table.delete())
+        db_session.commit() 
