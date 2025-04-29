@@ -30,8 +30,8 @@ COPY . .
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 
-# Expose port
+# Expose port (Heroku will override this with $PORT)
 EXPOSE 5000
 
-# Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"] 
+# Run the application using Heroku's $PORT
+CMD gunicorn --bind 0.0.0.0:$PORT app:app 
