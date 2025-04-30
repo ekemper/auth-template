@@ -1,29 +1,43 @@
-# Use Python 3.9 slim image as base
-FROM python:3.9-slim
+# Base stage for shared dependencies
+FROM python:3.9-slim as base
 
 # Set working directory
 WORKDIR /app
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    FLASK_APP=app.py \
-    FLASK_ENV=production
+    PYTHONUNBUFFERED=1
 
 # Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         gcc \
         python3-dev \
+        curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first to leverage Docker cache
-COPY requirements.txt .
+# Development stage
+FROM base as development
+ENV FLASK_ENV=development \
+    FLASK_DEBUG=1
 
-# Install Python dependencies
+# Copy requirements and install dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
+# Create non-root user but allow write permissions for development
+RUN useradd -m appuser && chown -R appuser:appuser /app
+USER appuser
+
+# Production stage
+FROM base as production
+ENV FLASK_ENV=production
+
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application code
 COPY . .
 
 # Create non-root user for security
